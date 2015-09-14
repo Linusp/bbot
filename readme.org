@@ -1,3 +1,11 @@
-** UBot
+* UBot
 
-   一个用在 BearyChat 中的辅助用机器人.
+  一个用在 BearyChat 中的辅助用机器人.
+
+** 安装
+
+   #+BEGIN_SRC sh
+   python setup.py install
+   #+END_SRC
+
+** 设置和使用
