@@ -35,7 +35,7 @@
    聊天功能使用的是[[http://www.tuling123.com/openapi/][图灵机器人]]，需要获取相应的 API KEY，将你的 API KEY 写到 HOME 目录下的 .botrc 中去，以 json 格式保存，如:
    #+BEGIN_SRC python
    {
-       "turing_bot_key": "sldkfjklsdjf299rejkldjf9",
+       "turing_bot_key": "sldkfjklsdjf299rejkldjf9"
    }
    #+END_SRC
 
