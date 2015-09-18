@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import json
+from flask import Flask, jsonify, request
+from bearybot import BearyBot, Controller
+
+
+if __name__ == '__main__':
+    controller = Controller()
+    bot = BearyBot('@lilei', controller)
+
+    bot.run(host='localhost', port=9816)
