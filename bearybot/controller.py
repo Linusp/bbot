@@ -1,13 +1,25 @@
 # -*- coding: utf-8 -*-
+import giphypop
 import json
 import requests
 
 from utils import clever_split, decode_to_unicode
 
 
+_GIF_CLIENT = giphypop.Giphy()
+
+
 def cat_func(paras, infos):
     """喵呜"""
     img_url = requests.get('http://thecatapi.com/api/images/get?format=src&type=gif', allow_redirects=False).headers['location']
+    return {
+        'attachments': [{'images': [{'url': img_url},]},]
+    }
+
+
+def gif_func(paras, infos):
+    """搜索 GIF 图片"""
+    img_url = _GIF_CLIENT.search(paras).next().media_url
     return {
         'attachments': [{'images': [{'url': img_url},]},]
     }
@@ -56,6 +68,7 @@ class Controller(object):
         self._comps = {}
         self.register('/cat', cat_func)
         self.register('/talk', talk_func)
+        self.register('/gif', gif_func)
         self.register('/help', self.help)
 
     def input_process(self, input_str):
