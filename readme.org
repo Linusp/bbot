@@ -4,8 +4,76 @@
 
 ** 安装
 
+   下载本项目代码后，通过 =setup.py= 来安装:
    #+BEGIN_SRC sh
    python setup.py install
    #+END_SRC
 
+   或者直接从 github 上安装:
+   #+BEGIN_SRC sh
+   sudo pip install git+https://github.com/Linusp/bbot.git
+   #+END_SRC
+
 ** 设置和使用
+
+   命令行工具 bbot 使用:
+   #+BEGIN_EXAMPLE
+   usage: bbot [-h] [-w WORD] [-p PORT]
+
+   Start a BearyBot
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     -w WORD, --word WORD  Set trigger word of bot.
+     -p PORT, --port PORT  Set port the bot listen, default value is 7428
+   #+END_EXAMPLE
+
+   该命令行工具即集成了两个命令，分别是:
+   + /cat: 返回一张随机的猫的 gif 图像
+   + /talk: 聊天
+
+   聊天功能使用的是[[http://www.tuling123.com/openapi/][图灵机器人]]，需要获取相应的 API KEY，将你的 API KEY 写到 HOME 目录下的 .botrc 中去，以 json 格式保存，如:
+   #+BEGIN_SRC python
+   {
+       "turing_bot_key": "sldkfjklsdjf299rejkldjf9",
+   }
+   #+END_SRC
+
+   当然你也可以自定义自己的机器人，通过向中心控制模块注册更多的命令响应方法来集成更丰富的功能
+
+   #+BEGIN_SRC python
+   from bearybot import BearyBot, Controller
+
+   def you_proc(paras, info):
+       """description
+
+       :type paras: str
+       :param paras: parameter
+
+       :type info: dict
+       :param info: internal parameters
+       """
+       # do something
+       # ......
+       return {
+           '<key>': <content>,
+       }
+
+
+   controller = Controller()
+   controller.register('/new_command', you_proc) # 使用 /new_command 作为 命令
+
+   bot = BearyBot('@bot', controller) # 使用 '@bot' 作为触发词
+   bot.run()
+   #+END_SRC
+
+   注册新的命令响应方法时有以下几点要注意:
+   1. paras 参数是一个 str，包含给自定义命令的参数
+
+      中心控制模块会在得到输入后，去除触发词和命令本身后，将剩下的字符串用来做为命令响应方法的参数。
+
+   2. info 参数是一些内部参数，包含 POST 请求中的请求参数，以及本地的一些配置
+
+   3. 返回结果必须是一个 dict，如果返回结果是文本，那么就返回 ={'text': <result>}=
+
+   4. 中心控制模块内置了两个命令，通过用相同命令名来注册不同的方法，可以覆盖内置的这两个命令的响应方法。
