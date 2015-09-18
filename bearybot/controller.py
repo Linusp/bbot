@@ -39,7 +39,7 @@ def image_search(paras, infos):
     data = resp.json()
 
     try:
-        img_url = data[u'responseData'][u'results'][0]['unescapeUrl']
+        img_url = data[u'responseData'][u'results'][0]['unescapedUrl']
         return {
             'attachments': [{'images': [{'url': img_url},]},]
         }
