@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import giphypop
 import json
+import random
 import requests
 
 from utils import clever_split, decode_to_unicode
@@ -23,6 +24,29 @@ def gif_func(paras, infos):
     return {
         'attachments': [{'images': [{'url': img_url},]},]
     }
+
+
+def image_search(paras, infos):
+    """使用 Google API 搜索图片"""
+    _api_url = 'http://ajax.googleapis.com/ajax/services/search/images'
+    params = {
+        'v': '1.0',
+        'rsz': '8',
+        'q': decode_to_unicode(paras),
+        'start': str(int(random.random() * 10))
+    }
+    resp = requests.get(_api_url, params=params)
+    data = resp.json()
+
+    try:
+        img_url = data[u'responseData'][u'results'][0]['unescapeUrl']
+        return {
+            'attachments': [{'images': [{'url': img_url},]},]
+        }
+    except Exception:
+        return {
+            'text': 'not found'
+        }
 
 
 def talk_func(paras, infos):
@@ -69,6 +93,7 @@ class Controller(object):
         self.register('/cat', cat_func)
         self.register('/talk', talk_func)
         self.register('/gif', gif_func)
+        self.register('/get', image_search)
         self.register('/help', self.help)
 
     def input_process(self, input_str):
