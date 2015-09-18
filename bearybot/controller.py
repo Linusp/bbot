@@ -18,7 +18,7 @@ def talk_func(paras, infos):
     data = {}
     data['key'] = infos.get('turing_bot_key', '')
     data['info'] = paras
-    data['userid'] = infos.get('user', 'HanMeimei')
+    data['userid'] = infos.get('user_name', 'HanMeimei')
     url = 'http://www.tuling123.com/openapi/api'
 
     res = requests.get(url, params=data, headers={'Content-type': 'text/html', 'charset': 'utf-8'})
@@ -71,7 +71,7 @@ class Controller(object):
         text = res_dict.get('text', '')
 
         subdomain = infos.get('subdomain', 'unknown')
-        user = infos.get('user', 'HanMeimei')
+        user = infos.get('user_name', 'HanMeimei')
         user_link = 'https://%s.bearychat.com/messages/@%s' % (subdomain, user)
         user_ref = '[@%s](%s)' % (user, user_link)
 

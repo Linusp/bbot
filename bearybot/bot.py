@@ -46,7 +46,6 @@ class BearyBot(object):
 
     def proc(self):
         """机器人处理方法"""
-        print 'request data is %r' % request.data
         try:
             info = json.loads(request.data)
         except Exception:
