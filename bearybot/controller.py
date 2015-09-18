@@ -19,7 +19,7 @@ def cat_func(paras, infos):
 
 def gif_func(paras, infos):
     """搜索 GIF 图片"""
-    img_url = _GIF_CLIENT.search(paras).next().media_url
+    img_url = _GIF_CLIENT.random_gif(paras).media_url
     return {
         'attachments': [{'images': [{'url': img_url},]},]
     }
