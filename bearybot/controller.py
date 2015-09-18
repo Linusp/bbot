@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-
-"""
+import json
 import requests
 
 from utils import clever_split, decode_to_unicode
@@ -18,12 +16,13 @@ def cat_func(paras, infos):
 def talk_func(paras, infos):
     """来聊天吧"""
     data = {}
-    data['key'] = infos.get('talk_api_key', '')
-    data['info'] = ' '.join(paras)
+    data['key'] = infos.get('turing_bot_key', '')
+    data['info'] = paras
     data['userid'] = infos.get('user', 'HanMeimei')
     url = 'http://www.tuling123.com/openapi/api'
 
     res = requests.get(url, params=data, headers={'Content-type': 'text/html', 'charset': 'utf-8'})
+    res = res.json()
 
     code = res.get('code', None)
     if code == 100000:     # 纯文本
@@ -57,7 +56,6 @@ class Controller(object):
         self._comps = {}
         self.register('/cat', cat_func)
         self.register('/talk', talk_func)
-        self.register('', talk_func)
         self.register('/help', self.help)
 
     def input_process(self, input_str):
@@ -67,10 +65,20 @@ class Controller(object):
         if cmd in self._comps.keys():
             return self._comps[cmd](paras, infos)
         else:
-            return 'unsupported command %s' % cmd
+            return {'text': 'unsupported command %s' % cmd}
 
-    def post_process(self, res_str):
-        return res_str
+    def post_process(self, res_dict, infos):
+        text = res_dict.get('text', '')
+
+        subdomain = infos.get('subdomain', 'unknown')
+        user = infos.get('user', 'HanMeimei')
+        user_link = 'https://%s.bearychat.com/messages/@%s' % (subdomain, user)
+        user_ref = '[@%s](%s)' % (user, user_link)
+
+        text = user_ref + '\n' + text
+        res_dict['text'] = text
+
+        return res_dict
 
     def register(self, cmd, func):
         """"""
@@ -93,9 +101,16 @@ class Controller(object):
     def process(self, text, infos):
         comps = self.input_process(text)
 
+        begin_index = 1
         if len(comps) == 0:
-            func = self._comps.get('/help')
+            cmd_str = '/help'
         else:
-            func = self._comps.get(comps[0], '/help')
+            if comps[0].startswith('/'):
+                cmd_str = comps[0]
+            else:
+                cmd_str = '/talk'
+                begin_index = 0
 
-        return func(comps[1:], infos)
+        paras = ' '.join(comps[begin_index:])
+        res = self.cmd_interpreter(cmd_str, paras, infos)
+        return self.post_process(res, infos)

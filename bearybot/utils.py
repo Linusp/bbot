@@ -81,19 +81,16 @@ def clever_split(text):
         if ch in pairs.values() and len(pair_stack) > 0 and \
            pairs.get(pair_stack[len(pair_stack) - 1]) == ch:
             pair_stack.pop()
-            print pair_stack
             continue
 
         # 当符号是成对标点的开始符号时，将其入栈
         if ch in pairs.keys():
             pair_stack.append(ch)
-            print pair_stack
             continue
 
         # 当栈为空且符号是空白符号时，记位置其为一个分割点
         if ch.isspace() and len(pair_stack) == 0:
             points.append(i)
-            print points
 
     points.append(len(text))
 

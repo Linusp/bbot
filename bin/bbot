@@ -1,13 +1,28 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-import json
+import sys
+import argparse
 from flask import Flask, jsonify, request
 from bearybot import BearyBot, Controller
 
 
 if __name__ == '__main__':
-    controller = Controller()
-    bot = BearyBot('@lilei', controller)
+    parser = argparse.ArgumentParser(description='Start a BearyBot')
+    parser.add_argument('-w', '--word', type=str,
+                        help='Set trigger word of bot.')
+    parser.add_argument('-p', '--port', type=int,
+                        help='Set port the bot listen, default value is 7428')
 
-    bot.run(host='localhost', port=9816)
+    args = parser.parse_args()
+
+    trigger_word = args.word
+    port = 7428 if not args.port else args.port
+
+    if not trigger_word:
+        print 'no trigger word is given!.'
+        sys.exit(1)
+
+    controller = Controller()
+    bot = BearyBot(trigger_word, controller)
+
+    bot.run(port=port)
