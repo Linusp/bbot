@@ -106,7 +106,7 @@ class Controller(object):
             if len(name) > 0:
                 result += '+ %s: %s\n' % (name, decode_to_unicode(func_description))
 
-        result += decode_to_unicode('不指定命令时，使用 /cat 命令\n')
+        result += decode_to_unicode('不指定命令时，使用 /talk 命令\n')
         return {
             'text': result,
         }
