@@ -12,18 +12,28 @@ _GIF_CLIENT = giphypop.Giphy()
 
 def cat_func(paras, infos):
     """喵呜"""
-    img_url = requests.get('http://thecatapi.com/api/images/get?format=src&type=gif', allow_redirects=False).headers['location']
-    return {
-        'attachments': [{'images': [{'url': img_url},]},]
-    }
+    try:
+        img_url = requests.get('http://thecatapi.com/api/images/get?format=src&type=gif', allow_redirects=False).headers['location']
+        return {
+            'attachments': [{'images': [{'url': img_url},]},]
+        }
+    except Exception:
+        return {
+            'text': 'not found'
+        }
 
 
 def gif_func(paras, infos):
     """搜索 GIF 图片"""
-    img_url = _GIF_CLIENT.random_gif(paras).media_url
-    return {
-        'attachments': [{'images': [{'url': img_url},]},]
-    }
+    try:
+        img_url = _GIF_CLIENT.random_gif(paras).media_url
+        return {
+            'attachments': [{'images': [{'url': img_url},]},]
+        }
+    except:
+        return {
+            'text': 'not found'
+        }
 
 
 def image_search(paras, infos):
