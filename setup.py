@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 from pip.req import parse_requirements
 
 
-VERSION = '20150918'
+VERSION = '20151017'
 
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 install_reqs = parse_requirements('requirements.txt')

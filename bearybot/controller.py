@@ -1,127 +1,101 @@
 # -*- coding: utf-8 -*-
-import giphypop
-import json
-import random
-import requests
 
+import logging
+
+from component import DEFAULT_KEY, COMPONENTS
 from utils import clever_split, decode_to_unicode
 
 
-_GIF_CLIENT = giphypop.Giphy()
-
-
-def cat_func(paras, infos):
-    """喵呜"""
-    try:
-        img_url = requests.get('http://thecatapi.com/api/images/get?format=src&type=gif', allow_redirects=False).headers['location']
-        return {
-            'attachments': [{'images': [{'url': img_url},]},]
-        }
-    except Exception:
-        return {
-            'text': 'not found'
-        }
-
-
-def gif_func(paras, infos):
-    """搜索 GIF 图片"""
-    try:
-        img_url = _GIF_CLIENT.random_gif(paras).media_url
-        return {
-            'attachments': [{'images': [{'url': img_url},]},]
-        }
-    except:
-        return {
-            'text': 'not found'
-        }
-
-
-def image_search(paras, infos):
-    """使用 Google API 搜索图片"""
-    _api_url = 'http://ajax.googleapis.com/ajax/services/search/images'
-    params = {
-        'v': '1.0',
-        'rsz': '8',
-        'q': decode_to_unicode(paras),
-        'start': str(int(random.random() * 10))
-    }
-    resp = requests.get(_api_url, params=params)
-    data = resp.json()
-
-    try:
-        img_url = data[u'responseData'][u'results'][0]['unescapedUrl']
-        return {
-            'attachments': [{'images': [{'url': img_url},]},]
-        }
-    except Exception:
-        return {
-            'text': 'not found'
-        }
-
-
-def talk_func(paras, infos):
-    """来聊天吧"""
-    data = {}
-    data['key'] = infos.get('turing_bot_key', '')
-    data['info'] = paras
-    data['userid'] = infos.get('user_name', 'HanMeimei')
-    url = 'http://www.tuling123.com/openapi/api'
-
-    res = requests.get(url, params=data, headers={'Content-type': 'text/html', 'charset': 'utf-8'})
-    res = res.json()
-
-    code = res.get('code', None)
-    if code == 100000:     # 纯文本
-        answer = res.get('text', 'Aha').replace('<br>', '\n')
-    elif code == 305000:   # 列车
-        answer = res.get('text', 'Aha').replace('<br>', '\n')
-        answer += '\n'
-        infos = res.get('list')[0]
-        answer += str(infos.get('trainnum')) + ': '
-        answer += '%s[%s] -> ' % (str(infos.get('start')), str(infos.get('starttime')))
-        answer += '%s[%s]' % (str(infos.get('terminal')), str(infos.get('endtime')))
-    elif code == 302000:
-        answer = res.get('text', 'Aha').replace('<br>', '\n')
-        answer += '\n'
-        infos = res.get('list')[0]
-        answer += '[%s](%s)' % (infos.get('article'), infos.get('detailurl'))
-        answer += '\nsource: %s' % infos.get('source')
-    else:
-        answer = 'Aha'
-
-    return {
-        'text': answer,
-    }
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='bbot.log')
 
 
 class Controller(object):
     """中心控制模块"""
 
-    def __init__(self):
-        """"""
+    def __init__(self, components=COMPONENTS):
+        """初始化方法
+
+        :type components: dict
+        :param components: 默认的命令组件，在 component.py 中实现，
+        key 是一个命令词，对应的 value 是一个函数对象，要求每个命
+        令词都以 '/' 符号开始。
+
+        需要注意的是，其中可能包含一个特殊的 key — DEFAULT_KEY，用
+        来设置无命令词时使用哪个方法进行处理，DEFAULT_KEY 对应的
+        value 不是一个函数对象，而是其他命令词中的一个；若 components
+        中没有设置 DEFAULT_KEY，在遇到该情况的输入时不作处理
+        """
         self._comps = {}
-        self.register('/cat', cat_func)
-        self.register('/talk', talk_func)
-        self.register('/gif', gif_func)
-        self.register('/get', image_search)
+        self._default_cmd = None
+
+        # 注册命令词及对应的处理方法
+        for cmd, func in components.iteritems():
+            # 略过 DEFAULT_KEY
+            if cmd != DEFAULT_KEY:
+                self.register(cmd, func)
+            else:
+                self._default_cmd = components.get(cmd)
+
+        self.set_default(self._default_cmd)
+
         self.register('/help', self.help)
 
-    def input_process(self, input_str):
+    def set_default(self, cmd):
+        """设置默认命令词
+
+        :type cmd: string begin with slash
+        :param cmd: 默认命令词，必须是已注册的命令
+        """
+        if cmd in self._comps.keys():
+            self._default_cmd = cmd
+        else:
+            self._default_cmd = None
+
+    def pre_process(self, input_str):
+        """内部预处理方法，包括简单的数据清洗、分词等操作
+
+        :type input_str: string
+        :param input_str: 待处理的中心模块输入，可能包含命令
+        词并跟随相应处理方法的参数
+        """
         return clever_split(input_str)
 
     def cmd_interpreter(self, cmd, paras, infos):
+        """内部命令解释方法，从已注册的组件中根据命令词
+        调用对应的处理方法
+
+        :type cmd: string
+        :param cmd: 合法的命令词
+
+        :type paras: string
+        :param paras: 命令处理方法的参数
+
+        :type infos: dict
+        :param infos: 命令处理方法的额外参数，用于一些使用第三方
+        API 的处理方法，可能包含诸如 API key 等用于认证的参数
+        """
         if cmd in self._comps.keys():
             return self._comps[cmd](paras, infos)
         else:
             return {'text': 'unsupported command %s' % cmd}
 
     def post_process(self, res_dict, infos):
+        """内部后处理方法，添加一些用户友好的信息
+
+        :type res_dict: dict
+        :param res_dict: 待返回的处理结果
+
+        :type infos: dict
+        :param infos: 额外参数，其中包含有从 BearyChat 传来的用户、
+        频道信息
+        """
         text = res_dict.get('text', '')
 
-        subdomain = infos.get('subdomain', 'unknown')
         user = infos.get('user_name', 'HanMeimei')
-        user_link = 'https://%s.bearychat.com/messages/@%s' % (subdomain, user)
-        user_ref = '[@%s](%s)' % (user, user_link)
+        user_ref = '@%s ' % user
 
         text = user_ref + '\n' + text
         res_dict['text'] = text
@@ -129,34 +103,66 @@ class Controller(object):
         return res_dict
 
     def register(self, cmd, func):
-        """"""
-        self._comps[cmd] = func
+        """命令注册方法
+
+        :type cmd: string starts with slash
+        :param cmd: 命令词，必须以 '/' 开头，否则会被无视
+
+        :type func: function object
+        :param func: 命令词对应的处理方法
+        """
+        if cmd.startswith('/'):
+            self._comps[cmd] = func
+        else:
+            logging.log(logging.WARN, 'bad command %s', cmd)
 
     def help(self, paras, infos):
         """输出使用帮助"""
         result = ''
 
-        for name, func in self._comps.iteritems():
-            func_description = func.__doc__ if func.__doc__ else 'no description'
-            if len(name) > 0:
-                result += '+ %s: %s\n' % (name, decode_to_unicode(func_description))
+        _ = paras
+        _ = infos
 
-        result += decode_to_unicode('不指定命令时，使用 /talk 命令\n')
+        # 遍历已注册组件
+        for name, func in self._comps.iteritems():
+            description = func.__doc__ if func.__doc__ else 'no description'
+            description = decode_to_unicode(description)
+            if len(name) > 0:
+                result += '+ %s: %s\n' % (name, description)
+
+        if self._default_cmd:
+            result += decode_to_unicode('不指定命令时，使用 "%s" 命令\n'
+                                        % self._default_cmd)
         return {
             'text': result,
         }
 
     def process(self, text, infos):
-        comps = self.input_process(text)
+        """中心控制模块对外的统一处理方法
 
+        :type text: string
+        :param text: 中心控制模块的原始输入，可能包含命令词及对应
+        的参数
+
+        :type infos: dict
+        :param infos: 包含 BearyChat 传来的用户、频道信息，以及
+        从配置文件读取的其他额外配置信息
+
+        返回一个 dict 类型的结果，该结果可以用 flask 中的 jsonify
+        方法处理后返回给请求方
+        """
+        # 分割原始输入得到一个 list
+        comps = self.pre_process(text)
+
+        # 检查 list 的长度和其中的第一个元素
         begin_index = 1
         if len(comps) == 0:
             cmd_str = '/help'
         else:
             if comps[0].startswith('/'):
                 cmd_str = comps[0]
-            else:
-                cmd_str = '/talk'
+            elif self._default_cmd:
+                cmd_str = self._default_cmd
                 begin_index = 0
 
         paras = ' '.join(comps[begin_index:])
