@@ -10,16 +10,6 @@ import giphypop
 
 from utils import decode_to_unicode
 
-
-DEFAULT_KEY = '/default'
-COMPONENTS = {
-    '/gif': gif_func,
-    '/img': image_search,
-    '/talk': talk_func,
-    DEFAULT_KEY: '/talk',
-}
-
-
 def gif_func(paras, infos):
     """使用 Gighy API 搜索 GIF 图片"""
     _ = infos

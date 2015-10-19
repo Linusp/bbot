@@ -2,7 +2,11 @@
 
 import logging
 
-from component import DEFAULT_KEY, COMPONENTS
+from component import (
+    gif_func,
+    image_search,
+    talk_func,
+)
 from utils import clever_split, decode_to_unicode
 
 
@@ -10,6 +14,15 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S',
                     filename='bbot.log')
+
+
+DEFAULT_KEY = '/default'
+COMPONENTS = {
+    '/gif': gif_func,
+    '/img': image_search,
+    '/talk': talk_func,
+    DEFAULT_KEY: '/talk',
+}
 
 
 class Controller(object):
