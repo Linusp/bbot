@@ -5,7 +5,10 @@ Author: Linusp
 Date: 2015/10/13
 """
 
-def AutoComponet(object):
+from Queue import Queue
+
+
+class AutoComponet(object):
     """组件将包含三种基本状态，分别是:
 
     1. 未运行
@@ -19,46 +22,22 @@ def AutoComponet(object):
     _STATUS_READY = 1           # 准备中
     _STATUS_RUNNING = 2         # 运行中
 
-    def __init__(self, user_list):
+    def __init__(self, *args, **kwargs):
         """初始化，并将游戏设置为初始状态"""
-        self.init(user_list)
+        self.status = None
+        self.init(*args, **kwargs)
 
     def __call__(self, paras, info):
         """核心科技"""
+        return self.process(paras, info)
 
-    def init(self, user_list):
-        self.user_list = user_list
-        self.input_pipe = []
-        self.output_pipe = []
-        self.status = _STATUS_NOT_READY
+    def init(self, *args, **kwargs):
+        """初始化核心功能相关的内部数据"""
+        self.status = self._STATUS_NOT_READY
 
     def reset_status(self):
-        self.status = _STATUS_NOT_READY
+        """重置组件状态"""
+        self.status = self._STATUS_NOT_READY
 
-    def process(self, cmd):
-        self.output_pipe.append(cmd)
-
-    def end(self):
-        if len(self.input_pipe) == 0:
-            self.status == _STATUS_END
-            return True
-        else:
-            return False
-
-    def add_command(self, command):
-        self.input_pipe.append(command)
-
-    def get_command(self):
-        cmd = self.inputpipeline[0]
-        self.input_pipe = self.input_pipe[1:]
-
-        return cmd
-
-    def add_output(self, output):
-        self.output_pipe.append(output)
-
-    def get_output(self):
-        output = self.output_pipe[0]
-        self.output_pipe = self.output_pipe[1:]
-
-        return out_put
+    def process(self, paras, info):
+        return paras
