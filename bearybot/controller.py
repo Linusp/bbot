@@ -6,6 +6,7 @@ from component import (
     gif_func,
     image_search,
     talk_func,
+    wiki_func,
 )
 from utils import clever_split, decode_to_unicode
 
@@ -19,7 +20,8 @@ logging.basicConfig(level=logging.INFO,
 DEFAULT_KEY = '/default'
 COMPONENTS = {
     '/gif': gif_func,
-    '/img': image_search,
+    # '/img': image_search,
+    '/wiki': wiki_func,
     '/talk': talk_func,
     DEFAULT_KEY: '/talk',
 }

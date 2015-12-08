@@ -7,6 +7,7 @@
 import random
 import requests
 import giphypop
+import wikipedia
 
 from utils import decode_to_unicode
 
@@ -68,3 +69,20 @@ def talk_func(paras, infos):
     return {
         'text': answer,
     }
+
+
+def wiki_func(paras, infos):
+    """中文维基百科查询"""
+    wikipedia.set_lang("zh")
+    candidates = wikipedia.search(paras)
+
+    if len(candidates) <= 0:
+        return {
+            'text': 'not found',
+        }
+    else:
+        summary = wikipedia.summary(candidates[0])
+        summary = 'not found' if not summary else summary
+        return {
+            'text': summary,
+        }
