@@ -81,8 +81,20 @@ def wiki_func(paras, infos):
             'text': 'not found',
         }
     else:
-        summary = wikipedia.summary(candidates[0])
-        summary = 'not found' if not summary else summary
-        return {
-            'text': summary,
-        }
+        summary = None
+        for keyword in candidates:
+            try:
+                summary = wikipedia.summary(keyword, sentences=1)
+                break
+            except Exception: # 可能发生歧义异常，见 wikipedia 文档
+                continue
+        if summary:
+            answer = decode_to_unicode(summary) + \
+                     u'\n候选关键词: %r' % candidates
+            return {
+                'text': answer,
+            }
+        else:
+            return {
+                'text': 'not found',
+            }
