@@ -90,7 +90,7 @@ def wiki_func(paras, infos):
                 continue
         if summary:
             answer = decode_to_unicode(summary) + \
-                     u'\n候选关键词: %r' % candidates
+                     u'\n候选关键词: %s' % u', '.join(candidates)
             return {
                 'text': answer,
             }
