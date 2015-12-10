@@ -110,21 +110,21 @@ def explain_dict_res(youdao_dict_res):
 
     query = _d['query']
 
-    res += query + '\n'
+    res += query
 
     if 'basic' in _d:
         has_result = True
         _b = _d['basic']
 
         if 'phonetic' in _b:
-            res += _b['phonetic'] + '\n'
+            res += '[' + _b['phonetic'] + ']\n'
         else:
             res += '\n'
 
         if 'explains' in _b:
             res += '  Word Explanation:\n'
             res += '\n'.join(
-                ['     * ' + explain + '\n' for explain in _b['explains']]
+                ['     * ' + explain for explain in _b['explains']]
             )
         else:
             res += '\n'
