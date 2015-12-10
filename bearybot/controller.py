@@ -7,6 +7,7 @@ from component import (
     image_search,
     talk_func,
     wiki_func,
+    dict_func,
 )
 from utils import clever_split, decode_to_unicode
 
@@ -23,6 +24,7 @@ COMPONENTS = {
     # '/img': image_search,
     '/wiki': wiki_func,
     '/talk': talk_func,
+    '/dict': dict_func,
     DEFAULT_KEY: '/talk',
 }
 
