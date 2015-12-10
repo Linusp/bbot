@@ -30,7 +30,7 @@
 
    该命令行工具即集成了两个命令，分别是:
    + /gif: 使用 Giphy API 搜索 gif 图片
-   + /img: 使用 Google 搜索图片
+   + +/img: 使用 Google 搜索图片+ (Google 图像搜索 API 已失效)
    + /talk: 聊天
 
    聊天功能使用的是[[http://www.tuling123.com/openapi/][图灵机器人]]，需要获取相应的 API KEY，将你的 API KEY 写到 HOME 目录下的 .botrc 中去，以 json 格式保存，如:
