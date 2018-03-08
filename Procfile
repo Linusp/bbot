@@ -1,1 +1,1 @@
-web: python main.py -w lilei
+web: python main.py -p $PORT -w $WORD
