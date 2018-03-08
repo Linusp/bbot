@@ -17,10 +17,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     trigger_word = args.word
-    port = 7428 if not args.port else args.port
-
+    port = args.port
     if not trigger_word:
         print('no trigger word is given!.')
+        sys.exit(1)
+    if port is None:
+        print('no port is given!.')
         sys.exit(1)
 
     controller = Controller()
