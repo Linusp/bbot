@@ -30,7 +30,7 @@ class BearyBot(object):
     def proc(self):
         """机器人处理方法"""
         try:
-            info = json.loads(request.data)
+            info = json.loads(request.data.decode('utf-8'))
         except Exception:
             print(request.data)
 
