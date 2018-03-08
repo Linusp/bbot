@@ -2,9 +2,8 @@
 
 import logging
 
-from component import (
+from .component import (
     gif_func,
-    image_search,
     talk_func,
     wiki_func,
     dict_func,
@@ -21,7 +20,6 @@ logging.basicConfig(level=logging.INFO,
 DEFAULT_KEY = '/default'
 COMPONENTS = {
     '/gif': gif_func,
-    # '/img': image_search,
     '/wiki': wiki_func,
     '/talk': talk_func,
     '/dict': dict_func,
