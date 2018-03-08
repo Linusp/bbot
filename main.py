@@ -1,9 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
+from __future__ import unicode_literals, print_function
+
 import sys
 import argparse
-from flask import Flask, jsonify, request
-from bearybot import BearyBot, Controller
+
+from bearybot.bot import BearyBot
+from bearybot.controller import Controller
 
 
 if __name__ == '__main__':
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     port = 7428 if not args.port else args.port
 
     if not trigger_word:
-        print 'no trigger word is given!.'
+        print('no trigger word is given!.')
         sys.exit(1)
 
     controller = Controller()
