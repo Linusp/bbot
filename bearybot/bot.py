@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals, print_function
+
 import json
 from flask import Flask, jsonify, request
 
@@ -30,7 +32,7 @@ class BearyBot(object):
         try:
             info = json.loads(request.data)
         except Exception:
-            print request.data
+            print(request.data)
 
         # 从文本中去除触发词
         text = info.get('text', '')

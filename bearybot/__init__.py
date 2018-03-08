@@ -1,2 +1,2 @@
-from bot import BearyBot
-from controller import Controller
+from .bot import BearyBot       # noqa
+from .controller import Controller  # noqa

@@ -47,7 +47,7 @@ class Controller(object):
         self._default_cmd = None
 
         # 注册命令词及对应的处理方法
-        for cmd, func in components.iteritems():
+        for cmd, func in components.items():
             # 略过 DEFAULT_KEY
             if cmd != DEFAULT_KEY:
                 self.register(cmd, func)
@@ -139,7 +139,7 @@ class Controller(object):
         _ = infos
 
         # 遍历已注册组件
-        for name, func in self._comps.iteritems():
+        for name, func in self._comps.items():
             description = func.__doc__ if func.__doc__ else 'no description'
             if len(name) > 0:
                 result += '+ %s: %s\n' % (name, description)
