@@ -60,7 +60,7 @@ def wiki_func(paras, infos):
             try:
                 summary = wikipedia.summary(keyword, sentences=1)
                 break
-            except Exception: # 可能发生歧义异常，见 wikipedia 文档
+            except Exception:  # 可能发生歧义异常，见 wikipedia 文档
                 continue
         if summary:
             answer = summary + u'\n候选关键词: %s' % u', '.join(candidates)
@@ -110,7 +110,7 @@ def explain_dict_res(youdao_dict_res):
     else:
         res += '\n'
 
-    #web reference
+    # web reference
     if 'web' in _d:
         has_result = True
         res += '\n  Web Reference:\n'

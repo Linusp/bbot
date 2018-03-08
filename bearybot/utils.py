@@ -70,4 +70,3 @@ def clever_split(text):
             result.append(sub_str)
 
     return result
-
