@@ -27,7 +27,7 @@ def gif_func(paras, infos):
 def talk_func(paras, infos):
     """来聊天吧"""
     data = {}
-    data['key'] = infos.get('turing_bot_key', '')
+    data['key'] = os.environ.get('TURING_BOT_KEY', '')
     data['info'] = paras
     data['userid'] = infos.get('user_name', 'HanMeimei')
     url = 'http://www.tuling123.com/openapi/api'
@@ -132,8 +132,8 @@ def explain_dict_res(youdao_dict_res):
 
 def dict_func(paras, info):
     """有道词典查询"""
-    key = info.get('youdao_api_key')
-    key_from = info.get('youdao_key_from')
+    key = os.environ.get('YOUDAO_API_KEY')
+    key_from = os.environ.get('YOUDAO_KEY_FROM')
     if not key or not key_from:
         return {
             'text': 'robot component error(invalid api key)',
