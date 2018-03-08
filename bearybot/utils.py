@@ -12,38 +12,6 @@ _PUNCT_LIST = set([
 ])
 
 
-def decode_to_unicode(text):
-    """将文本安全地转换为 unicode 串
-
-    :type text: str 或 unicode
-    :param text: 需要转换的文本
-
-    如果参数的类型不是 str 也不是 unicode ，将会抛出 TypeError 异常
-    """
-    if isinstance(text, str):
-        return text.decode('utf-8')
-    elif isinstance(text, unicode):
-        return text
-    else:
-        raise TypeError('Wrong type %r(should be str or unicode)' % type(text))
-
-
-def encode_from_unicode(text):
-    """将文本安全地转换为 ascii 串
-
-    :type text: str 或 unicode
-    :param text: 需要转换的文本
-
-    如果参数的类型不是 str 也不是 unicode ，将会抛出 TypeError 异常
-    """
-    if isinstance(text, str):
-        return text
-    elif isinstance(text, unicode):
-        return text.encode('utf-8')
-    else:
-        raise TypeError('Wrong type %r(should be str or unicode)' % type(text))
-
-
 def remove_punct(text):
     """去除文本中的标点符号
 
@@ -52,7 +20,7 @@ def remove_punct(text):
 
     返回 unicode 类型的、去除了标点的文本
     """
-    return re.sub(''.join(_PUNCT_LIST), ' ', decode_to_unicode(text))
+    return re.sub(''.join(_PUNCT_LIST), ' ', text)
 
 
 def clever_split(text):
@@ -61,8 +29,6 @@ def clever_split(text):
     对于一般的情况，按空白符号进行分割，但若空白符号被成对的标点包裹，
     则不对其进行分割
     """
-    text = decode_to_unicode(text)
-
     pairs = {
         u'(': u')',
         u'[': u']',

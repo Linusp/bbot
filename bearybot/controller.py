@@ -8,7 +8,7 @@ from .component import (
     wiki_func,
     dict_func,
 )
-from utils import clever_split, decode_to_unicode
+from .utils import clever_split
 
 
 logging.basicConfig(level=logging.INFO,
@@ -141,13 +141,12 @@ class Controller(object):
         # 遍历已注册组件
         for name, func in self._comps.iteritems():
             description = func.__doc__ if func.__doc__ else 'no description'
-            description = decode_to_unicode(description)
             if len(name) > 0:
                 result += '+ %s: %s\n' % (name, description)
 
         if self._default_cmd:
-            result += decode_to_unicode('不指定命令时，使用 "%s" 命令\n'
-                                        % self._default_cmd)
+            result += '不指定命令时，使用 "%s" 命令\n' % self._default_cmd
+
         return {
             'text': result,
         }

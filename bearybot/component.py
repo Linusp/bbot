@@ -63,8 +63,7 @@ def wiki_func(paras, infos):
             except Exception: # 可能发生歧义异常，见 wikipedia 文档
                 continue
         if summary:
-            answer = decode_to_unicode(summary) + \
-                     u'\n候选关键词: %s' % u', '.join(candidates)
+            answer = summary + u'\n候选关键词: %s' % u', '.join(candidates)
             return {
                 'text': answer,
             }
@@ -146,7 +145,7 @@ def dict_func(paras, info):
     data['type'] = 'data'
     data['version'] = '1.1'
     data['doctype'] = 'json'
-    data['q'] = decode_to_unicode(paras)
+    data['q'] = paras
 
     r = requests.get('http://fanyi.youdao.com/openapi.do', params=data)
     req = None
