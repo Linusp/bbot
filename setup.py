@@ -12,7 +12,7 @@ setup(
     url='https://github.com/Linusp/bbot',
     author='Linusp',
     description='A simple bot for BearcyChat',
-    license='BSD',
+    license='MIT',
     packages=find_packages(),
     scripts=['bin/bbot'],
     install_requires=[
