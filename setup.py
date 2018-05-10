@@ -14,7 +14,9 @@ setup(
     description='A simple bot for BearcyChat',
     license='MIT',
     packages=find_packages(),
-    scripts=['bin/bbot'],
+    entry_points={
+        'console_scripts': ['bbot=bearybot.main:main'],
+    },
     install_requires=[
         'Flask>=0.10.1,<1.0.0',
         'requests>=2.7.0,<3.0.0',
