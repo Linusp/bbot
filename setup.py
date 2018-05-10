@@ -2,17 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
 
 
-VERSION = '20151210'
-
-# parse_requirements() returns generator of pip.req.InstallRequirement objects
-install_reqs = parse_requirements('requirements.txt')
-
-# reqs is a list of requirement
-reqs = [str(ir.req) for ir in install_reqs]
-
+VERSION = '0.2.0'
 
 setup(
     name='bearybot',
@@ -23,7 +15,12 @@ setup(
     license='BSD',
     packages=find_packages(),
     scripts=['bin/bbot'],
-    install_requires=reqs,
+    install_requires=[
+        'Flask>=0.10.1,<1.0.0',
+        'requests>=2.7.0,<3.0.0',
+        'giphypop>=0.2,<1.0',
+        'wikipedia==1.4.0,<2.0.0',
+    ],
     include_package_data=True,
     zip_safe=False,
 )
